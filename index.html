@@ -10,6 +10,7 @@
 <script type="text/javascript">
 	"use strict";
 
+	// https://stackoverflow.com/questions/247483/http-get-request-in-javascript
 	function httpGet(theUrl){
 	    var xmlHttp = new XMLHttpRequest();
 	    xmlHttp.open( "GET", theUrl, false );
@@ -17,6 +18,7 @@
 	    return xmlHttp.responseText;
 	}
 	
+	// https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
 	function download(filename, text) {
 		var element = document.createElement('a');
 		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -30,6 +32,7 @@
 		document.body.removeChild(element);
 	}
 
+	// http://gradersections.ducta.net/
 	let data = httpGet("https://docs.google.com/spreadsheets/d/17PrxZS_BnBqAsFfVVP6oL08TvymFIFqbIXijq63r9LI/gviz/tq?tqx=out:csv&sheet=Student-Grader-GraderSection");
 	
 	data = data.split("\n");
