@@ -6,61 +6,61 @@
 	<title>Name List Generator</title>
 </head>
 <body>
+	<script type="text/javascript">
+		"use strict";
+
+		// https://stackoverflow.com/questions/247483/http-get-request-in-javascript
+		function httpGet(theUrl){
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open( "GET", theUrl, false );
+			xmlHttp.send( null );
+			return xmlHttp.responseText;
+		}
+		
+		// https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
+		function download(filename, text) {
+			var element = document.createElement('a');
+			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			element.setAttribute('download', filename);
+			element.click();
+		}
+
+		// http://gradersections.ducta.net/
+		let data = httpGet("https://docs.google.com/spreadsheets/d/17PrxZS_BnBqAsFfVVP6oL08TvymFIFqbIXijq63r9LI/gviz/tq?tqx=out:csv&sheet=Student-Grader-GraderSection");
+		data = data.split("\n");
+		
+		const sections = new Map();
+		for (let i = 0; i < data.length; i++) {
+			let info = data[i].split(",");
+			
+			if (info[0].search(/Grader SECTION \d\d/i) != 1 && info[0].length != 19) {
+				continue;
+			}
+			
+			let grader = info[1].replaceAll(/\"/g, "");
+			let student = (info[5] + info[4]).replaceAll(/[ \"-]/g, "");
+			
+			if (!student) {
+				continue;
+			}
+
+			let students = sections.get(grader);
+			if (students) {
+				sections.set(grader, students + "\n" + student);
+			} else {
+				sections.set(grader, student);
+			}
+		}
+		
+		for (let tutor of sections.keys()) {
+			let button = document.createElement("button");
+			button.innerText = tutor;
+			document.body.appendChild(button);
+			
+			button.addEventListener("click", function() {
+				download("studentNames.txt", sections.get(tutor));
+			});
+		}
+	</script>
 </body>
-<script type="text/javascript">
-	"use strict";
-
-	// https://stackoverflow.com/questions/247483/http-get-request-in-javascript
-	function httpGet(theUrl){
-	    var xmlHttp = new XMLHttpRequest();
-	    xmlHttp.open( "GET", theUrl, false );
-	    xmlHttp.send( null );
-	    return xmlHttp.responseText;
-	}
-	
-	// https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
-	function download(filename, text) {
-		var element = document.createElement('a');
-		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-		element.setAttribute('download', filename);
-		element.click();
-	}
-
-	// http://gradersections.ducta.net/
-	let data = httpGet("https://docs.google.com/spreadsheets/d/17PrxZS_BnBqAsFfVVP6oL08TvymFIFqbIXijq63r9LI/gviz/tq?tqx=out:csv&sheet=Student-Grader-GraderSection");
-	data = data.split("\n");
-	
-	const sections = new Map();
-	for (let i = 0; i < data.length; i++) {
-		let info = data[i].split(",");
-		
-		if (info[0].search(/Grader SECTION \d\d/i) != 1 && info[0].length != 19) {
-			continue;
-		}
-		
-		let grader = info[1].replaceAll(/\"/g, "");
-		let student = (info[5] + info[4]).replaceAll(/[ \"-]/g, "");
-		
-		if (!student) {
-			continue;
-		}
-
-		let students = sections.get(grader);
-		if (students) {
-			sections.set(grader, students + "\n" + student);
-		} else {
-			sections.set(grader, student);
-		}
-	}
-	
-	for (let tutor of sections.keys()) {
-		let button = document.createElement("button");
-		button.innerText = tutor;
-		document.body.appendChild(button);
-		
-		button.addEventListener("click", function() {
-			download("studentNames.txt", sections.get(tutor));
-		});
-	}
-</script>
 </html>
