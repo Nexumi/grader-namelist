@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Name List Generator</title>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+	"use strict";
+
+	function httpGet(theUrl){
+	    var xmlHttp = new XMLHttpRequest();
+	    xmlHttp.open( "GET", theUrl, false );
+	    xmlHttp.send( null );
+	    return xmlHttp.responseText;
+	}
+	
+	function download(filename, text) {
+		var element = document.createElement('a');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		element.setAttribute('download', filename);
+
+		element.style.display = 'none';
+		document.body.appendChild(element);
+
+		element.click();
+
+		document.body.removeChild(element);
+	}
+
+	let data = httpGet("https://docs.google.com/spreadsheets/d/17PrxZS_BnBqAsFfVVP6oL08TvymFIFqbIXijq63r9LI/gviz/tq?tqx=out:csv&sheet=Student-Grader-GraderSection");
+	
+	data = data.split("\n");
+	data = data.slice(3);
+	for (let i = data.length - 41; i > 0; i -= 41) {
+		data.splice(i, 1);
+	}
+	
+	const sections = new Map();
+	for (let i = 0; i < data.length; i++) {
+		let info = data[i].split(",");
+		let grader = info[1].replaceAll("\"", "");
+		let student = (info[5] + info[4]).replaceAll(/[ \"-]/g, "");
+		
+		if (!student) {
+			continue;
+		}
+
+		let students = sections.get(grader);
+		if (students) {
+			sections.set(grader, students + "\n" + student);
+		} else {
+			sections.set(grader, student);
+		}
+	}
+	
+	for (let tutor of sections.keys()) {
+		let button = document.createElement("button");
+		button.innerText = tutor;
+		document.body.appendChild(button);
+		
+		button.addEventListener("click", function() {
+			download("studentNames.txt", sections.get(tutor));
+		});
+	}
+</script>
+</html>
