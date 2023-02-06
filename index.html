@@ -34,17 +34,17 @@
 
 	// http://gradersections.ducta.net/
 	let data = httpGet("https://docs.google.com/spreadsheets/d/17PrxZS_BnBqAsFfVVP6oL08TvymFIFqbIXijq63r9LI/gviz/tq?tqx=out:csv&sheet=Student-Grader-GraderSection");
-	
 	data = data.split("\n");
-	data = data.slice(3);
-	for (let i = data.length - 41; i > 0; i -= 41) {
-		data.splice(i, 1);
-	}
 	
 	const sections = new Map();
 	for (let i = 0; i < data.length; i++) {
 		let info = data[i].split(",");
-		let grader = info[1].replaceAll("\"", "");
+		
+		if (info[0].search(/Grader SECTION \d\d/i) != 1 && info[0].length != 19) {
+			continue;
+		}
+		
+		let grader = info[1].replaceAll(/\"/g, "");
 		let student = (info[5] + info[4]).replaceAll(/[ \"-]/g, "");
 		
 		if (!student) {
