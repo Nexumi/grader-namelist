@@ -8,19 +8,19 @@
 <body>
 	<script type="text/javascript">
 		"use strict";
-		
-		// https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
-		function download(filename, text) {
-			var element = document.createElement('a');
-			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-			element.setAttribute('download', filename);
-			element.click();
-		}
 
 		// http://gradersections.ducta.net/
 		fetch("https://docs.google.com/spreadsheets/d/17PrxZS_BnBqAsFfVVP6oL08TvymFIFqbIXijq63r9LI/gviz/tq?tqx=out:csv&sheet=Student-Grader-GraderSection")
 			.then((response) => response.text())
 			.then((data) => {
+				// https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
+				function download(filename, text) {
+					var element = document.createElement('a');
+					element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+					element.setAttribute('download', filename);
+					element.click();
+				}
+
 				data = data.split("\n");
 				
 				const sections = new Map();
