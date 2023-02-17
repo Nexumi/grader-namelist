@@ -29,8 +29,9 @@
 					
 					if (info[0].search(/Grader SECTION \d\d/i) == 1 && info[0].length == 19) {
 						let grader = info[1].replaceAll(/\"/g, "");
+						info[4] = info[4].charAt(0).toUpperCase() + info[4].slice(1);
+						info[5] = info[5].charAt(0).toUpperCase() + info[5].slice(1);
 						let student = (info[5] + info[4]).replaceAll(/[ \"-]/g, "");
-						student = student.charAt(0).toUpperCase() + student.slice(1);
 						
 						if (student) {
 							let students = sections.get(grader);
