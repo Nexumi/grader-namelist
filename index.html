@@ -29,11 +29,18 @@
 					
 					if (info[0].search(/Grader SECTION \d\d/i) == 1 && info[0].length == 19) {
 						let grader = info[1].replaceAll(/\"/g, "");
-						info[4] = info[4].toLowerCase().replaceAll(/[ \"-]/g, "");
-						info[4] = info[4].charAt(0).toUpperCase() + info[4].slice(1);
-						info[5] = info[5].toLowerCase().replaceAll(/[ \"-]/g, "");
-						info[5] = info[5].charAt(0).toUpperCase() + info[5].slice(1);
-						let student = info[5] + info[4];
+						
+						info[4] = info[4].toLowerCase().replaceAll(/[\"-]/g, "").split(" ");
+						for (let i = 0; i < info[4].length; i++) {
+							info[4][i] = info[4][i].charAt(0).toUpperCase() + info[4][i].slice(1);
+						}
+						
+						info[5] = info[5].toLowerCase().replaceAll(/[\"-]/g, "").split(" ");
+						for (let i = 0; i < info[5].length; i++) {
+							info[5][i] = info[5][i].charAt(0).toUpperCase() + info[5][i].slice(1);
+						}						
+						
+						let student = info[5].join("") + info[4].join("");
 						
 						if (student) {
 							let students = sections.get(grader);
